@@ -12,3 +12,18 @@ class Menu:
         print("5. Exit")
         print()
         print("=" * 40)
+
+    def get_choice(self):
+        while True:
+            choice = input("\nEnter your choice: ").strip()
+
+            if not choice:
+                print("Choice cannot be empty.")
+                continue
+
+            try:
+                choice = int(choice)
+                return choice
+
+            except ValueError:
+                print("Invalid input.")

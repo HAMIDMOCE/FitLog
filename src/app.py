@@ -7,3 +7,6 @@ class App:
 
     def run(self):
         self.menu.display()
+
+        choice = self.menu.get_choice()
+        print(f"You selected: {choice}")
