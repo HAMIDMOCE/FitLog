@@ -76,7 +76,7 @@ class DatabaseManager:
                 CREATE TABLE IF NOT EXISTS weights(
                     id INT PRIMARY KEY AUTO_INCREMENT,
                     weight DECIMAL(5, 2) NOT NULL,
-                    recorded_at DATETIME NOT NULL,
+                    recorded_at DATETIME NOT NULL UNIQUE,
                     added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
                 """
@@ -124,3 +124,59 @@ class DatabaseManager:
                 return False, messages
 
         return True, messages
+
+    def weight_exists(self, recorded_at):
+        try:
+            self.cursor.execute(
+                """
+                SELECT id FROM weights
+                WHERE recorded_at = %s
+                """,
+                (recorded_at,)
+            )
+
+            record = self.cursor.fetchone()
+
+            return record is not None
+
+        except connector.Error:
+            return False
+
+    def insert_weight(self, weight, recorded_at):
+        try:
+            self.cursor.execute(
+                """
+                INSERT INTO weights (weight, recorded_at)
+                VALUES (%s, %s)
+                """,
+                (weight, recorded_at)
+            )
+
+            self.connection.commit()
+
+            return True, "Weight added successfully."
+
+        except connector.Error as error:
+            return False, str(error)
+
+    def update_weight(self, weight, recorded_at):
+        try:
+            self.cursor.execute(
+                """
+                UPDATE weights SET weight=%s
+                WHERE recorded_at = %s
+                """,
+                (weight, recorded_at)
+            )
+
+            self.connection.commit()
+
+            count = self.cursor.rowcount
+
+            if count == 0:
+                return False, "No weight record found for this date."
+
+            return True, "Updated successfully."
+
+        except connector.Error as error:
+            return False, str(error)
