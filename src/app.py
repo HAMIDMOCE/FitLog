@@ -1,11 +1,23 @@
 from src.menu import Menu
+from src.database import DatabaseManager
 
 class App:
 
     def __init__(self):
         self.menu = Menu()
+        self.database = DatabaseManager()
 
     def run(self):
+        status, messages = self.database.initialize()
+
+        for message in messages:
+            print(message)
+
+        print()
+
+        if not status:
+            return
+        
         while True:
             self.menu.display()
 
