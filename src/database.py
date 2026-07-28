@@ -180,3 +180,20 @@ class DatabaseManager:
 
         except connector.Error as error:
             return False, str(error)
+
+    def get_all_weights(self):
+        try:
+            self.cursor.execute(
+                """
+                SELECT id, weight, recorded_at, added_at
+                FROM weights
+                ORDER BY recorded_at ASC
+                """
+            )
+
+            records = self.cursor.fetchall()
+
+            return True, records
+
+        except connector.Error as error:
+            return False, str(error)

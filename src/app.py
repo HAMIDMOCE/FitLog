@@ -2,12 +2,16 @@ from src.menu import Menu
 from src.database import DatabaseManager
 
 from datetime import datetime
+from rich.console import Console
+from rich.table import Table
 
 class App:
 
     def __init__(self):
         self.menu = Menu()
         self.database = DatabaseManager()
+
+        self.console = Console()
 
     def run(self):
         status, messages = self.database.initialize()
@@ -37,7 +41,7 @@ class App:
             return self.add_daily_weight()
         
         elif choice == 2:
-            return True, "\nView Weight History selected."
+            return self.view_weight_history()
 
         elif choice == 3:
             return True, "\nStatistics selected."
@@ -106,3 +110,32 @@ class App:
             return True, "Operation cancelled."
 
         return self.database.insert_weight(weight, recorded_at)
+
+    def view_weight_history(self):
+        self.print_header("WEIGHT HISTORY")
+
+        status, records = self.database.get_all_weights()
+
+        if not status:
+            return False, records
+
+        if not records:
+            return True, "No records found."
+
+        table = Table(
+            title="Weight History",
+            show_lines=True
+        )
+        table.add_column("ID")
+        table.add_column("Weight")
+        table.add_column("Recorded Date")
+        table.add_column("Added At")
+
+        for record in records:
+            id_, weight, recorded_at, added_at = record
+
+            table.add_row(str(id_), str(weight), str(recorded_at), str(added_at))
+
+        self.console.print(table)
+
+        return True, ""
