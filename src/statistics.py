@@ -1,11 +1,10 @@
-from rich.console import Console
 from rich.table import Table
 
 class Statistics:
 
-    def __init__(self, database):
+    def __init__(self, database, console):
         self.database = database
-        self.console = Console()
+        self.console = console
 
     def show(self):
         status, total_records = self.database.get_total_records()
