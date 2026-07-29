@@ -1,5 +1,6 @@
 from src.menu import Menu
 from src.database import DatabaseManager
+from src.statistics import Statistics
 
 from datetime import datetime
 from rich.console import Console
@@ -10,6 +11,7 @@ class App:
     def __init__(self):
         self.menu = Menu()
         self.database = DatabaseManager()
+        self.statistics = Statistics(self.database)
 
         self.console = Console()
 
@@ -44,7 +46,7 @@ class App:
             return self.view_weight_history()
 
         elif choice == 3:
-            return True, "\nStatistics selected."
+            return self.statistics.show()
 
         elif choice == 4:
             return True, "\nReports selected."

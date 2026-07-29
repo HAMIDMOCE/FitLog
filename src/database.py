@@ -191,9 +191,90 @@ class DatabaseManager:
                 """
             )
 
-            records = self.cursor.fetchall()
+            return True, self.cursor.fetchall()
 
-            return True, records
+        except connector.Error as error:
+            return False, str(error)
+
+    def get_total_records(self):
+        try:
+            self.cursor.execute(
+                """
+                SELECT COUNT(*)
+                FROM weights
+                """
+            )
+
+            return True, self.cursor.fetchone()[0]
+
+        except connector.Error as error:
+            return False, str(error)
+
+    def get_current_weight(self):
+        try:
+            self.cursor.execute(
+                """
+                SELECT weight
+                FROM weights
+                ORDER BY recorded_at DESC
+                LIMIT 1
+                """
+            )
+            
+            result = self.cursor.fetchone()
+
+            if result is None:
+                return True, None
+
+            return True, result[0]
+
+        except connector.Error as error:
+            return False, str(error)
+
+    def get_highest_weight(self):
+        try:
+            self.cursor.execute(
+                """
+                SELECT MAX(weight)
+                FROM weights
+                """
+            )
+
+            result = self.cursor.fetchone()
+            
+            return True, result[0]
+
+        except connector.Error as error:
+            return False, str(error)
+
+    def get_lowest_weight(self):
+        try:
+            self.cursor.execute(
+                """
+                SELECT MIN(weight)
+                FROM weights
+                """
+            )
+
+            result = self.cursor.fetchone()
+            
+            return True, result[0]
+
+        except connector.Error as error:
+            return False, str(error)
+
+    def get_average_weight(self):
+        try:
+            self.cursor.execute(
+                """
+                SELECT AVG(weight)
+                FROM weights
+                """
+            )
+
+            result = self.cursor.fetchone()
+            
+            return True, result[0]
 
         except connector.Error as error:
             return False, str(error)
