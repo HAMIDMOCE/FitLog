@@ -278,3 +278,35 @@ class DatabaseManager:
 
         except connector.Error as error:
             return False, str(error)
+
+    def get_first_and_last_weight(self):
+        try:
+            self.cursor.execute(
+                """
+                SELECT weight
+                FROM weights
+                ORDER BY recorded_at DESC
+                LIMIT 1
+                """
+            )
+
+            last_weight = self.cursor.fetchone()
+
+            self.cursor.execute(
+                """
+                SELECT weight
+                FROM weights
+                ORDER BY recorded_at ASC
+                LIMIT 1
+                """
+            )
+
+            first_weight = self.cursor.fetchone()
+
+            if first_weight is None or last_weight is None:
+                return True, None, None
+
+            return True, first_weight[0], last_weight[0]
+
+        except connector.Error as error:
+            return False, str(error)

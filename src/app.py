@@ -2,6 +2,7 @@ from src.menu import Menu
 from src.database import DatabaseManager
 from src.statistics import Statistics
 from src.weight import Weight
+from src.reports import Reports
 
 from rich.console import Console
 
@@ -15,6 +16,7 @@ class App:
 
         self.weight = Weight(self.database, self.console)
         self.statistics = Statistics(self.database, self.console)
+        self.reports = Reports(self.database, self.console)
 
     def run(self):
         status, messages = self.database.initialize()
@@ -50,7 +52,7 @@ class App:
             return self.statistics.show()
 
         elif choice == 4:
-            return True, "\nReports selected."
+            return self.reports.show_weight_change_report()
 
         elif choice == 5:
             return False, "\nGoodbye!"
