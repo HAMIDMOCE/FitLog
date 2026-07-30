@@ -1,4 +1,5 @@
 from mysql import connector
+from datetime import datetime, timedelta
 
 class DatabaseManager:
 
@@ -310,3 +311,80 @@ class DatabaseManager:
 
         except connector.Error as error:
             return False, str(error)
+
+    def get_weekly_records(self):
+        today = datetime.today()
+        week_day = today.weekday()
+
+        start_of_week = today - timedelta(days=week_day)
+        start_of_week= start_of_week.replace(
+            hour=0,
+            minute=0,
+            second=0
+        )
+
+        end_of_week = start_of_week + timedelta(days=6)
+        end_of_week = end_of_week.replace(
+            hour=23,
+            minute=59,
+            second=59
+        )
+
+        try:
+            self.cursor.execute(
+                """
+                SELECT weight, recorded_at
+                FROM weights
+                WHERE recorded_at BETWEEN %s AND %s
+                ORDER BY recorded_at ASC
+                """,
+                (start_of_week, end_of_week)
+            )
+
+            records = self.cursor.fetchall()
+
+            return True, records
+
+        except connector.Error as error:
+            return False, str(error)
+
+    def get_monthly_records(self):
+        today = datetime.today()
+        
+        start_of_month = today.replace(
+            day=1,
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0
+        )
+
+        if start_of_month.month == 12:
+            next_month = start_of_month.replace(
+                year=start_of_month.year + 1,
+                month=1
+            )
+        else:
+            next_month = start_of_month.replace(
+                month=start_of_month.month + 1
+            )
+
+        end_of_month = next_month - timedelta(seconds=1)
+
+        try:
+            self.cursor.execute(
+                """
+                SELECT weight, recorded_at
+                FROM weights
+                WHERE recorded_at BETWEEN %s AND %s
+                ORDER BY recorded_at ASC
+                """,
+                (start_of_month, end_of_month)
+            )
+
+            records = self.cursor.fetchall()
+
+            return True, records
+
+        except connector.Error as error:
+            return False, str(error)        

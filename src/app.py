@@ -52,7 +52,7 @@ class App:
             return self.statistics.show()
 
         elif choice == 4:
-            return self.reports.show_weight_change_report()
+            return self.reports.show()
 
         elif choice == 5:
             return False, "\nGoodbye!"
