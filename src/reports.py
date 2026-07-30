@@ -33,8 +33,8 @@ class Reports:
             show_lines=True
         )
 
-        table.add_column("Metric".center())
-        table.add_column("Value".center())
+        table.add_column("Metric", justify="center")
+        table.add_column("Value", justify="center")
 
         table.add_row("First Weight", f"{first_weight:.2f}")
         table.add_row("Last Weight", f"{last_weight:.2f}")

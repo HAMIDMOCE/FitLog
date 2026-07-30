@@ -31,8 +31,8 @@ class Statistics:
             title="STATISTICS",
             show_lines=True
         )
-        table.add_column("Metric".center())
-        table.add_column("Value".center())
+        table.add_column("Metric", justify="center")
+        table.add_column("Value", justify="center")
 
         table.add_row(
             "Total Records",
